@@ -31,13 +31,21 @@ public abstract class Game implements Runnable, KeyListener {
     public static final byte SMOOTH_GAME_LOOP = 1;
     private byte gameLoopStyle;
 
-    public Game(int width, int height, float scale, int fps, String title, byte gameLoopStyle) {
+    private int tileSize;
+    private int tilesInWidth;
+    private int tilesInHeight;
+
+    public Game(int width, int height, float scale, int fps, String title, byte gameLoopStyle, int tileSize) {
 
         this.width = width;
         this.height = height;
         this.scale = scale;
 
         this.gameLoopStyle = gameLoopStyle;
+
+        this.tileSize = tileSize;
+        tilesInWidth = width / tileSize;
+        tilesInHeight = height / tileSize;
 
         limit = 1_000_000_000 / fps;
 
@@ -215,4 +223,17 @@ public abstract class Game implements Runnable, KeyListener {
     public void setShowLoopLog(boolean showLoopLog) {
         this.showLoopLog = showLoopLog;
     }
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public int getTilesInWidth() {
+        return tilesInWidth;
+    }
+
+    public int getTilesInHeight() {
+        return tilesInHeight;
+    }
+
 }
