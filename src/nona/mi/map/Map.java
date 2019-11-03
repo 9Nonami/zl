@@ -5,24 +5,34 @@ import nona.mi.loader.TextLoader;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 public class Map {
 
     private Tile tile;
     private MyGame myGame;
     private int[] intMap;
+    private HashMap<Integer, Door> doors;
 
-    public Map(MyGame myGame, String mapTxtPath){
+    public Map(MyGame myGame, String mapTxtPath, int[] nextMapIDs){
 
         this.myGame = myGame;
         this.tile = myGame.getTile();
 
+        doors = new HashMap<Integer, Door>();
+
         String temp = TextLoader.loadText(mapTxtPath);
         this.intMap = new int[temp.length()];
+
+        int cont = 0;
 
         for (int i = 0; i < intMap.length; i++) {
             int id = Integer.parseInt(String.valueOf(temp.charAt(i)));
             intMap[i] = id;
+            if (id == 3){
+                doors.put(i, new Door(myGame, nextMapIDs[cont]));
+                cont++;
+            }
         }
     }
 
@@ -45,4 +55,7 @@ public class Map {
         return intMap;
     }
 
+    public HashMap<Integer, Door> getDoors() {
+        return doors;
+    }
 }

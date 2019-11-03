@@ -6,6 +6,7 @@ import nona.mi.player.Player;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 
 public class MyGame extends Game {
 
@@ -18,19 +19,30 @@ public class MyGame extends Game {
     private boolean left;
     private boolean right;
 
+    private Map map1;
+    private Map map2;
+
+    private HashMap<Integer, Map> allMaps;
+
     public MyGame(int width, int height, float scale, int fps, String title, byte gameLoopStyle, int tileSize) {
 
         super(width, height, scale, fps, title, gameLoopStyle, tileSize);
         tile = new Tile(this, "/res/spritesheet.png");
         player = new Player(this, 30, 30, 1);
-        mapBasis = new Map(this, "/res/map1.txt");
+        allMaps = new HashMap<Integer, Map>();
+
+        map1 = new Map(this, "/res/map1.txt", new int[]{2});
+        allMaps.put(1, map1);
+
+        map2 = new Map(this, "/res/map2.txt", new int[]{1});
+        allMaps.put(2, map2);
+
+        mapBasis = map1;
     }
 
     @Override
     public void updateClass() {
-
         player.update();
-
     }
 
     @Override
@@ -77,6 +89,14 @@ public class MyGame extends Game {
 
     public Map getMapBasis() {
         return mapBasis;
+    }
+
+    public HashMap<Integer, Map> getAllMaps() {
+        return allMaps;
+    }
+
+    public void setMapBasis(Map mapBasis) {
+        this.mapBasis = mapBasis;
     }
 
     public boolean isUp() {

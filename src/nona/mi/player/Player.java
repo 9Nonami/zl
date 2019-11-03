@@ -1,6 +1,7 @@
 package nona.mi.player;
 
 import nona.mi.main.MyGame;
+import nona.mi.map.Door;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -13,6 +14,16 @@ public class Player {
     private BufferedImage sprite;
     private MyGame myGame;
 
+    private boolean outUp;
+    private boolean outDown;
+    private boolean outLeft;
+    private boolean outRight;
+
+    private boolean up;
+    private boolean down;
+    private boolean left;
+    private boolean right;
+
     public Player(MyGame myGame, int x, int y, int speed) {
         this.myGame = myGame;
         this.x = x;
@@ -22,41 +33,23 @@ public class Player {
     }
 
     public void update(){
-        boolean up = myGame.isUp();
-        boolean down = myGame.isDown();
-        boolean left = myGame.isLeft();
-        boolean right = myGame.isRight();
 
-        if (up && !willUpCollide()){
-            y -= speed;
-        }
-        if (down && !willDownCollide()){
-            y += speed;
-        }
-        if (left && !willLeftCollide()){
-            x -= speed;
-        }
-        if (right && !willRightCollide()){
-            x += speed;
+        up = myGame.isUp();
+        down = myGame.isDown();
+        left = myGame.isLeft();
+        right = myGame.isRight();
+
+        if (isOutOfMap()){
+            changeMap();
+        } else {
+            move();
         }
 
+        resetOuts();
     }
 
     public void render(Graphics g){
         g.drawImage(sprite, (int)(x * myGame.getScale()), (int)(y * myGame.getScale()), (int)(sprite.getWidth() * myGame.getScale()), (int)(sprite.getHeight() * myGame.getScale()), null);
-    }
-
-    public void setPosition(int x, int y){
-        this.x = x;
-        this.y = y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
     }
 
     private boolean willUpCollide(){
@@ -125,6 +118,68 @@ public class Player {
         }
 
         return false;
+    }
+
+    private boolean isOutOfMap(){
+
+        if (up && y - speed < 0){
+            outUp = true;
+            return true;
+        }
+
+        if (down && (y + myGame.getTileSize() + speed) > myGame.getHeight()){
+            outDown = true;
+            return true;
+        }
+
+        if (left && x - speed < 0){
+            outLeft = true;
+            return true;
+        }
+
+        if (right && (x + myGame.getTileSize() + speed) > myGame.getWidth()){
+            outRight = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    private void changeMap(){
+
+        int playerCenterX = ((x + (myGame.getTileSize() / 2)) / myGame.getTileSize());
+        int playerCenterY = ((y + (myGame.getTileSize() / 2)) / myGame.getTileSize());
+        int id = (playerCenterX + (playerCenterY * myGame.getTilesInWidth()));
+
+        Door tempDoor = myGame.getMapBasis().getDoors().get(id);
+        tempDoor.defineXY(outUp, outDown, outLeft, outRight, x, y);
+
+        x = tempDoor.getNewPlayerX();
+        y = tempDoor.getNewPlayerY();
+
+        myGame.setMapBasis(myGame.getAllMaps().get(tempDoor.getNextMapID()));
+    }
+
+    private void move(){
+        if (up && !willUpCollide()){
+            y -= speed;
+        }
+        if (down && !willDownCollide()){
+            y += speed;
+        }
+        if (left && !willLeftCollide()){
+            x -= speed;
+        }
+        if (right && !willRightCollide()){
+            x += speed;
+        }
+    }
+
+    private void resetOuts(){
+        outUp = false;
+        outDown = false;
+        outLeft = false;
+        outRight = false;
     }
 
 }
