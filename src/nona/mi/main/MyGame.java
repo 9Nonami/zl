@@ -19,9 +19,6 @@ public class MyGame extends Game {
     private boolean left;
     private boolean right;
 
-    private Map map1;
-    private Map map2;
-
     private HashMap<Integer, Map> allMaps;
 
     public MyGame(int width, int height, float scale, int fps, String title, byte gameLoopStyle, int tileSize) {
@@ -31,13 +28,13 @@ public class MyGame extends Game {
         player = new Player(this, 30, 30, 1);
         allMaps = new HashMap<Integer, Map>();
 
-        map1 = new Map(this, "/res/map1.txt", new int[]{2});
-        allMaps.put(1, map1);
+        allMaps.put(1, new Map(this, "/res/map1.txt", new int[]{2, 3, 4, 5}));
+        allMaps.put(2, new Map(this, "/res/map2.txt", new int[]{1}));
+        allMaps.put(3, new Map(this, "/res/map3.txt", new int[]{1}));
+        allMaps.put(4, new Map(this, "/res/map4.txt", new int[]{1}));
+        allMaps.put(5, new Map(this, "/res/map5.txt", new int[]{1}));
 
-        map2 = new Map(this, "/res/map2.txt", new int[]{1});
-        allMaps.put(2, map2);
-
-        mapBasis = map1;
+        mapBasis = allMaps.get(1);
     }
 
     @Override
