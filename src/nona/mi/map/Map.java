@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-public class Map {
+public class Map{
 
     private Tile tile;
     private MyGame myGame;
@@ -35,6 +35,8 @@ public class Map {
             }
         }
     }
+
+    public void update(){}
 
     public void render(Graphics g){
         int x = 0;

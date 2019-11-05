@@ -2,11 +2,12 @@ package nona.mi.player;
 
 import nona.mi.main.MyGame;
 import nona.mi.map.Door;
+import nona.mi.map.Map;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public class Player {
+public class Player{
 
     private int x;
     private int y;
@@ -32,7 +33,7 @@ public class Player {
         this.sprite = myGame.getTile().get(2);
     }
 
-    public void update(){
+    public void update(Map map){
 
         up = myGame.isUp();
         down = myGame.isDown();
@@ -40,9 +41,9 @@ public class Player {
         right = myGame.isRight();
 
         if (isOutOfMap()){
-            changeMap();
+            changeMap(map);
         } else {
-            move();
+            move(map);
         }
 
         resetOuts();
@@ -52,7 +53,7 @@ public class Player {
         g.drawImage(sprite, (int)(x * myGame.getScale()), (int)(y * myGame.getScale()), (int)(sprite.getWidth() * myGame.getScale()), (int)(sprite.getHeight() * myGame.getScale()), null);
     }
 
-    private boolean willUpCollide(){
+    private boolean willUpCollide(Map map){
 
         int topleftx = x / myGame.getTileSize();
         int toplefty = (y - speed) / myGame.getTileSize();
@@ -62,14 +63,14 @@ public class Player {
         int toprighty = (y - speed) / myGame.getTileSize();
         int toprightid = (toprightx + (toprighty * myGame.getTilesInWidth()));
 
-        if  (myGame.getMapBasis().getIntMap()[topleftid] == 1 || myGame.getMapBasis().getIntMap()[toprightid] == 1){
+        if  (map.getIntMap()[topleftid] == 1 || map.getIntMap()[toprightid] == 1){
             return true; //colidiu
         }
 
         return false; //livre
     }
 
-    private boolean willDownCollide(){
+    private boolean willDownCollide(Map map){
 
         int bottomleftx = x / myGame.getTileSize();
         int bottomlefty = ((y + myGame.getTileSize() - 1) + speed) / myGame.getTileSize();
@@ -79,14 +80,14 @@ public class Player {
         int bottomrighty = ((y + myGame.getTileSize() - 1) + speed) / myGame.getTileSize();
         int bottomright = (bottomrightx + (bottomrighty * myGame.getTilesInWidth()));
 
-        if  (myGame.getMapBasis().getIntMap()[bottomleft] == 1 || myGame.getMapBasis().getIntMap()[bottomright] == 1){
+        if  (map.getIntMap()[bottomleft] == 1 || map.getIntMap()[bottomright] == 1){
             return true;
         }
 
         return false;
     }
 
-    private boolean willLeftCollide(){
+    private boolean willLeftCollide(Map map){
 
         int topleftx = (x - speed) / myGame.getTileSize();
         int toplefty = y / myGame.getTileSize();
@@ -96,14 +97,14 @@ public class Player {
         int bottomlefty = (y + myGame.getTileSize() - 1) / myGame.getTileSize();
         int bottomleftid = (bottomleftx + (bottomlefty * myGame.getTilesInWidth()));
 
-        if (myGame.getMapBasis().getIntMap()[topleftid] == 1 || myGame.getMapBasis().getIntMap()[bottomleftid] == 1){
+        if (map.getIntMap()[topleftid] == 1 || map.getIntMap()[bottomleftid] == 1){
             return true;
         }
 
         return false;
     }
 
-    private boolean willRightCollide(){
+    private boolean willRightCollide(Map map){
 
         int toprightx = ((x + myGame.getTileSize() - 1) + speed) / myGame.getTileSize();
         int toprighty = y / myGame.getTileSize();
@@ -113,7 +114,7 @@ public class Player {
         int bottomrighty = (y + myGame.getTileSize() - 1) / myGame.getTileSize();
         int bottomright = (bottomrightx + (bottomrighty * myGame.getTilesInWidth()));
 
-        if  (myGame.getMapBasis().getIntMap()[topright] == 1 || myGame.getMapBasis().getIntMap()[bottomright] == 1){
+        if  (map.getIntMap()[topright] == 1 || map.getIntMap()[bottomright] == 1){
             return true;
         }
 
@@ -145,32 +146,32 @@ public class Player {
         return false;
     }
 
-    private void changeMap(){
+    private void changeMap(Map map){
 
         int playerCenterX = ((x + (myGame.getTileSize() / 2)) / myGame.getTileSize());
         int playerCenterY = ((y + (myGame.getTileSize() / 2)) / myGame.getTileSize());
         int id = (playerCenterX + (playerCenterY * myGame.getTilesInWidth()));
 
-        Door tempDoor = myGame.getMapBasis().getDoors().get(id);
+        Door tempDoor = map.getDoors().get(id);
         tempDoor.defineXY(outUp, outDown, outLeft, outRight, x, y);
 
         x = tempDoor.getNewPlayerX();
         y = tempDoor.getNewPlayerY();
 
-        myGame.setMapBasis(myGame.getAllMaps().get(tempDoor.getNextMapID()));
+        myGame.setSceneBasis(myGame.getAllScenes().get(tempDoor.getNexSceneID()));
     }
 
-    private void move(){
-        if (up && !willUpCollide()){
+    private void move(Map map){
+        if (up && !willUpCollide(map)){
             y -= speed;
         }
-        if (down && !willDownCollide()){
+        if (down && !willDownCollide(map)){
             y += speed;
         }
-        if (left && !willLeftCollide()){
+        if (left && !willLeftCollide(map)){
             x -= speed;
         }
-        if (right && !willRightCollide()){
+        if (right && !willRightCollide(map)){
             x += speed;
         }
     }

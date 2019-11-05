@@ -6,12 +6,12 @@ public class Door {
 
     private int newPlayerX;
     private int newPlayerY;
-    private int nextMapID;
+    private int nexSceneID;
     private MyGame myGame;
 
-    public Door(MyGame myGame, int nextMapID){
+    public Door(MyGame myGame, int nexSceneID){
         this.myGame = myGame;
-        this.nextMapID = nextMapID;
+        this.nexSceneID = nexSceneID;
     }
 
     public void defineXY(boolean outUp, boolean outDown, boolean outLeft, boolean outRight, int playerX, int playerY){
@@ -38,8 +38,8 @@ public class Door {
         return newPlayerY;
     }
 
-    public int getNextMapID() {
-        return nextMapID;
+    public int getNexSceneID() {
+        return nexSceneID;
     }
 
 }
